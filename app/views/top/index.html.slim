@@ -1,14 +1,8 @@
 - @title = 'Top'
 
-br
-
-h1.brand.center.shadow Longest Streak Ranking
-
-br
-
 .row
   .col-md-offset-4.col-md-4
-    = form_tag root_path, method: :get do
+    = form_tag rank_path, method: :get do
       .form-group
         .input-group
           span.input-group-addon = fa_icon 'github fw'
@@ -16,5 +10,3 @@ br
           span.input-group-btn
             = button_tag type: :submit, class: 'btn btn-default' do
               = fa_icon 'search fw'
-
-br
