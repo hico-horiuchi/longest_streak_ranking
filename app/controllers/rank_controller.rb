@@ -8,25 +8,25 @@ class RankController < ApplicationController
     if username.present?
       @users = []
       begin
-        followers = client.followers username
-        followers << client.user( username )
+        following = client.following username
+        following << client.user( username )
       rescue
-        followers = []
+        following = []
       end
 
-      followers.each do |follower|
+      following.each do |follow|
         user = {}
 
-        user[:login] = follower.login
-        user[:avatar_url] = follower.avatar_url
-        user[:html_url] = follower.html_url
-        user[:me] = true if follower.login == username
+        user[:login] = follow.login
+        user[:avatar_url] = follow.avatar_url
+        user[:html_url] = follow.html_url
+        user[:me] = true if follow.login == username
 
-        streak = Streak.where( username: follower.login ).first
+        streak = Streak.where( username: follow.login ).first
         if streak and streak.updated_at < Time.now.yesterday
           streak.update longest_streak: GitHubScraper::longest_streak( streak.username )
         elsif not streak
-          streak = Streak.create username: follower.login, longest_streak: GitHubScraper::longest_streak( follower.login )
+          streak = Streak.create username: follow.login, longest_streak: GitHubScraper::longest_streak( follow.login )
         end
         user[:longest_streak] = streak.longest_streak
 
