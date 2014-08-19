@@ -10,7 +10,7 @@
           td.avatar-cell
             = image_tag user[:avatar_url], class: 'img-responsive img-circle'
           td.middle
-            = link_to user[:html_url], class: 'black' do
+            = link_to user[:html_url], class: 'black', target: :_blank do
               strong #{user[:login]}
             br
             | #{user[:longest_streak]}
