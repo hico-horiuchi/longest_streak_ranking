@@ -34,7 +34,7 @@ class RankController < ApplicationController
       end
 
       @users = @users.sort_by { |val| val[:longest_streak] }
-      @users = @users.reverse
+      @users = @users.reverse[0..9]
     else
       redirect_to root_path
     end
