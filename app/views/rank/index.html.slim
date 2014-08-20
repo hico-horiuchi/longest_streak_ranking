@@ -1,16 +1,19 @@
 - @title = 'Rank'
 
-.rank-container
-  table.table.table-hover
-    tbody
-      - @users.each_with_index do |user, i|
-        tr class="#{'info' if user[:me]}"
-          td.num-cell.right.middle
-            strong.rank #{i + 1}
-          td.avatar-cell
-            = image_tag user[:avatar_url], class: 'img-responsive img-circle'
-          td.middle
-            = link_to user[:html_url], class: 'black', target: :_blank do
-              strong #{user[:login]}
-            br
-            | #{user[:longest_streak]}
+- if @users.empty?
+  h4.bold.text-danger.center No such username in GitHub.
+- else
+  .rank-container
+    table.table.table-hover
+      tbody
+        - @users.each_with_index do |user, i|
+          tr class="#{'info' if user[:me]}"
+            td.num-cell.right.middle
+              strong.rank #{i + 1}
+            td.avatar-cell
+              = image_tag user[:avatar_url], class: 'img-responsive img-circle'
+            td.middle
+              = link_to user[:html_url], class: 'black', target: :_blank do
+                strong #{user[:login]}
+              br
+              | #{user[:longest_streak]}
