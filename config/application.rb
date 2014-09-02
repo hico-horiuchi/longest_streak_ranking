@@ -25,5 +25,10 @@ module StreakRanking
     config.generators.stylesheets = false
     config.generators.javascripts = false
     config.generators.helper      = false
+
+    # Add the fonts path
+    config.assets.paths << Rails.root.join( 'vendor', 'assets', 'fonts' )
+    # Precompile additional assets
+    config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
   end
 end
