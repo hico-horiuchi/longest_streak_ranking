@@ -25,11 +25,11 @@ class RankController < ApplicationController
 
         streak = Streak.where( username: follow.login ).first
         if streak and streak.updated_at < Time.now.yesterday
-          github = GitHubScraper::current_streak( streak.username )
-          streak.update current_streak: github[:current], current_streak: githu[:current]
+          github = GitHubScraper::streak( streak.username )
+          streak.update current_streak: github[:current], current_streak: github[:current]
         elsif not streak
-          github = GitHubScraper::current_streak( streak.username )
-          streak = Streak.create username: follow.login, current_streak: github[:current], current_streak: githu[:current]
+          github = GitHubScraper::streak( follow.login )
+          streak = Streak.create username: follow.login, current_streak: github[:current], current_streak: github[:current]
         end
         user[:current_streak] = streak.current_streak
 
