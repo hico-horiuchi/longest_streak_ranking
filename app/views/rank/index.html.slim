@@ -1,9 +1,11 @@
 - @title = 'Rank'
 
-- if @users.empty?
-  h4.bold.text-danger.center No such username in GitHub.
-- else
-  .rank-container
+.rank-container
+  - if @users.empty?
+    .alert.alert-danger.center
+      h1.white = fa_icon 'times-circle 5x'
+      h4.center No such username.
+  - else
     table.table.table-hover
       tbody
         - @users.each_with_index do |user, i|
