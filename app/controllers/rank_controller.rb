@@ -26,10 +26,10 @@ class RankController < ApplicationController
         streak = Streak.where( username: follow.login ).first
         if streak and streak.updated_at < Time.now.yesterday
           github = GitHubScraper::streak( streak.username )
-          streak.update current_streak: github[:current], current_streak: github[:current]
+          streak.update current_streak: github[:current], longest_streak: github[:current]
         elsif not streak
           github = GitHubScraper::streak( follow.login )
-          streak = Streak.create username: follow.login, current_streak: github[:current], current_streak: github[:current]
+          streak = Streak.create username: follow.login, current_streak: github[:current], longest_streak: github[:current]
         end
         user[:current_streak] = streak.current_streak
 
@@ -70,10 +70,10 @@ class RankController < ApplicationController
         streak = Streak.where( username: follow.login ).first
         if streak and streak.updated_at < Time.now.yesterday
           github = GitHubScraper::streak( streak.username )
-          streak.update longest_streak: github[:longest], current_streak: github[:current]
+          streak.update current_streak: github[:current], longest_streak: github[:current]
         elsif not streak
           github = GitHubScraper::streak( follow.login )
-          streak = Streak.create username: follow.login, longest_streak: github[:longest], current_streak: github[:current]
+          streak = Streak.create username: follow.login, current_streak: github[:current], longest_streak: github[:current]
         end
         user[:longest_streak] = streak.longest_streak
 
