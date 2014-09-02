@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root to: 'top#index'
-  get 'rank' => 'rank#index', as: :rank
+  get 'rank/current' => 'rank#current', as: :current_rank
+  get 'rank/longest' => 'rank#longest', as: :longest_rank
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

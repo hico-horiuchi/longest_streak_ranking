@@ -1,0 +1,25 @@
+- @title = 'Longest'
+
+.rank-container
+  - if @users.empty?
+    .alert.alert-danger.center
+      h1.white = fa_icon 'times-circle 5x'
+      h4.center No such username.
+  - else
+    .btn-group.btn-group-justified
+      = link_to 'Current', current_rank_path, class: 'btn btn-default'
+      = link_to 'Longest', longest_rank_path, class: 'btn btn-info'
+    br
+    table.table.table-hover
+      tbody
+        - @users.each_with_index do |user, i|
+          tr class="#{'info' if user[:me]}"
+            td.num-cell.right.middle
+              strong.rank #{i + 1}
+            td.avatar-cell
+              = image_tag user[:avatar_url], class: 'img-responsive img-circle'
+            td.middle
+              = link_to user[:html_url], class: 'black', target: :_blank do
+                strong #{user[:login]}
+              br
+              | #{user[:longest_streak]}
