@@ -1,89 +1,19 @@
 class RankController < ApplicationController
+  before_action :get_username
+
   def current
-    client = Octokit::Client.new \
-      client_id:     ENV['GiTHUB_CLIENT_ID'],
-      client_secret: ENV['GiTHUB_CLIENT_SECRET']
-    session[:username] = params[:username] if session[:username].blank?
-    username = session[:username]
-
-    if username.present?
-      @users = []
-      begin
-        following = client.following username
-        following << client.user( username )
-      rescue
-        following = []
-      end
-
-      following.each do |follow|
-        user = {}
-
-        user[:login] = follow.login
-        user[:avatar_url] = follow.avatar_url
-        user[:html_url] = follow.html_url
-        user[:me] = true if follow.login == username
-
-        streak = Streak.where( username: follow.login ).first
-        if streak and streak.updated_at < Time.now.yesterday
-          github = GitHubScraper::streak( streak.username )
-          streak.update current_streak: github[:current], longest_streak: github[:longest]
-        elsif not streak
-          github = GitHubScraper::streak( follow.login )
-          streak = Streak.create username: follow.login, current_streak: github[:current], longest_streak: github[:longest]
-        end
-        user[:current_streak] = streak.current_streak
-
-        @users << user
-      end
-
-      @users = @users.sort_by { |val| val[:current_streak] }
-      @users = @users.reverse[0..9]
-    else
-      redirect_to root_path
-    end
+    @users = GitHubStreak::ranking @username, 'current'
   end
 
   def longest
-    client = Octokit::Client.new \
-      client_id:     ENV['GiTHUB_CLIENT_ID'],
-      client_secret: ENV['GiTHUB_CLIENT_SECRET']
+    @users = GitHubStreak::ranking @username, 'longest'
+  end
+
+  private
+
+  def get_username
+    redirect_to root_path if params[:username].blank? and session[:username].blank?
     session[:username] = params[:username] if session[:username].blank?
-    username = session[:username]
-
-    if username.present?
-      @users = []
-      begin
-        following = client.following username
-        following << client.user( username )
-      rescue
-        following = []
-      end
-
-      following.each do |follow|
-        user = {}
-
-        user[:login] = follow.login
-        user[:avatar_url] = follow.avatar_url
-        user[:html_url] = follow.html_url
-        user[:me] = true if follow.login == username
-
-        streak = Streak.where( username: follow.login ).first
-        if streak and streak.updated_at < Time.now.yesterday
-          github = GitHubScraper::streak( streak.username )
-          streak.update current_streak: github[:current], longest_streak: github[:longest]
-        elsif not streak
-          github = GitHubScraper::streak( follow.login )
-          streak = Streak.create username: follow.login, current_streak: github[:current], longest_streak: github[:longest]
-        end
-        user[:longest_streak] = streak.longest_streak
-
-        @users << user
-      end
-
-      @users = @users.sort_by { |val| val[:longest_streak] }
-      @users = @users.reverse[0..9]
-    else
-      redirect_to root_path
-    end
+    @username = session[:username]
   end
 end
